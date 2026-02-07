@@ -1,0 +1,5 @@
+{
+  "name": "Celestial Cartographer",
+  "description": "A 3D planet visualizer that renders custom GeoJSON maps with elevation data and tracks individual population locations on a spherical surface.",
+  "requestFramePermissions": []
+}
