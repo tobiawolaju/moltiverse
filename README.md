@@ -1,7 +1,3 @@
-Got it — here’s a **full, final, GitHub-ready README** that includes **everything**: architecture, social-media regulation, folder structure, and deployment flow. You can paste this directly into `README.md` and ship.
-
----
-
 # Moltiverse — Salmonad: Your Autonomous Web3 Intern
 
 **Hackathon Track:** Agent + Token
