@@ -1,0 +1,23 @@
+{
+    "name": "salmonad-agent",
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "start": "tsx index.ts",
+        "dev": "tsx watch index.ts",
+        "build": "tsc"
+    },
+    "dependencies": {
+        "@google-cloud/vertexai": "^1.9.2",
+        "ethers": "^6.13.5",
+        "ws": "^8.18.0",
+        "dotenv": "^16.4.7",
+        "chalk": "^5.4.1"
+    },
+    "devDependencies": {
+        "tsx": "^4.19.2",
+        "typescript": "^5.7.3",
+        "@types/ws": "^8.5.14",
+        "@types/node": "^22.13.1"
+    }
+}

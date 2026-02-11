@@ -143,7 +143,10 @@ function generatePeople(): Person[] {
 }
 
 // Generate people after map
-const people = generatePeople();
+export const people = generatePeople();
+
+// Social Post storage
+export const socialPosts: any[] = [];
 
 // Watcher Events
 const watcherEvents: WatcherEvent[] = [
@@ -251,3 +254,35 @@ export function startMapStream(ws: WebSocket) {
   console.log('Client connected to /map');
   ws.send(JSON.stringify(mapData));
 }
+
+export function registerTrade(fromId: string, toId: string, amount: string): Transaction {
+  const tx: Transaction = {
+    id: `tx_ext_${Date.now()}`,
+    fromId,
+    toId,
+    amount,
+    timestamp: Date.now()
+  };
+
+  // Update balances if possible
+  const from = people.find(p => p.id === fromId);
+  const to = people.find(p => p.id === toId);
+  if (from) from.wallet.balance -= parseFloat(amount);
+  if (to) to.wallet.balance += parseFloat(amount);
+
+  return tx;
+}
+
+export function registerSocialPost(authorId: string, text: string): any {
+  const post = {
+    id: `post_${Date.now()}`,
+    authorId,
+    text,
+    timestamp: Date.now(),
+    upvotes: 0,
+    downvotes: 0
+  };
+  socialPosts.push(post);
+  return post;
+}
+

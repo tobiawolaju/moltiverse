@@ -7,10 +7,33 @@ import path from 'path';
 
 const app = express();
 app.use(cors());
+app.use(express.json());
+
+import { people, registerTrade, registerSocialPost, socialPosts } from './generators';
 
 // Health check
 app.get('/', (req, res) => {
     res.send('Moltiverse Backend Running');
+});
+
+app.get('/market/state', (req, res) => {
+    res.json({ people, socialPosts });
+});
+
+app.post('/trade', (req, res) => {
+    const { fromId, toId, amount } = req.body;
+    const tx = registerTrade(fromId, toId, amount.toString());
+    res.json(tx);
+});
+
+app.post('/social/post', (req, res) => {
+    const { authorId, text } = req.body;
+    const post = registerSocialPost(authorId, text);
+    res.json(post);
+});
+
+app.get('/social/feed', (req, res) => {
+    res.json(socialPosts);
 });
 
 const server = http.createServer(app);
