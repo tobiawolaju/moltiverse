@@ -22,7 +22,7 @@ const Watcher: React.FC<WatcherProps> = ({ people, onSelectPerson }) => {
 
   // WebSocket Connection
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8080/watcher');
+    const ws = new WebSocket(`${import.meta.env.VITE_WS_BACKEND_URL}/watcher`);
 
     ws.onmessage = (event) => {
       try {

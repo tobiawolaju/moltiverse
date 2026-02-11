@@ -83,7 +83,7 @@ const App: React.FC = () => {
   // WebSocket Integration for People and Transactions
   useEffect(() => {
     // Map Stream
-    const mapWs = new WebSocket('ws://localhost:8080/map');
+    const mapWs = new WebSocket(`${import.meta.env.VITE_WS_BACKEND_URL}/map`);
     mapWs.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -94,7 +94,7 @@ const App: React.FC = () => {
     };
 
     // Planet Stream
-    const planetWs = new WebSocket('ws://localhost:8080/planet');
+    const planetWs = new WebSocket(`${import.meta.env.VITE_WS_BACKEND_URL}/planet`);
     planetWs.onmessage = (event) => {
       try {
         const config = JSON.parse(event.data);
@@ -105,7 +105,7 @@ const App: React.FC = () => {
     };
 
     // People Stream
-    const peopleWs = new WebSocket('ws://localhost:8080/people');
+    const peopleWs = new WebSocket(`${import.meta.env.VITE_WS_BACKEND_URL}/people`);
     peopleWs.onmessage = (event) => {
       try {
         const msg = JSON.parse(event.data);
@@ -118,7 +118,7 @@ const App: React.FC = () => {
     };
 
     // Transactions Stream
-    const txWs = new WebSocket('ws://localhost:8080/transactions');
+    const txWs = new WebSocket(`${import.meta.env.VITE_WS_BACKEND_URL}/transactions`);
     txWs.onmessage = (event) => {
       try {
         const newTx = JSON.parse(event.data);
