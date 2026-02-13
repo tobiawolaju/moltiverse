@@ -26,15 +26,44 @@ app.post('/trade', (req, res) => {
     res.json(tx);
 });
 
-app.post('/social/post', (req, res) => {
+app.post('/moltbook/post', (req, res) => {
     const { authorId, text } = req.body;
     const post = registerSocialPost(authorId, text);
     res.json(post);
 });
 
-app.get('/social/feed', (req, res) => {
+app.get('/moltbook/feed', (req, res) => {
     res.json(socialPosts);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//expose tools as an api
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });

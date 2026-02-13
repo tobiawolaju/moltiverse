@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Globe from './components/Globe';
 import Watcher from './components/Watcher';
+import Moltbook, { MoltbookPost } from './components/Moltbook';
 import { MapData, Person, PlanetConfig, Transaction } from './types';
 import { X, Hash, ChevronRight, Activity, Zap, ThumbsUp, ThumbsDown, Wallet, MessageSquare, ShieldCheck, Cpu, RefreshCcw, ArrowRight, ArrowUpRight, ArrowDownLeft, Clock } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
@@ -79,6 +80,7 @@ const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [bypassLock, setBypassLock] = useState(false);
+  const [moltbookPosts, setMoltbookPosts] = useState<MoltbookPost[]>([]);
 
   // WebSocket Integration for People and Transactions
   useEffect(() => {
@@ -128,11 +130,27 @@ const App: React.FC = () => {
       }
     };
 
+    // Moltbook Polling (Fallback for real-time if backend doesn't support WS for social yet)
+    const pollMoltbook = async () => {
+      try {
+        const url = import.meta.env.VITE_WS_BACKEND_URL.replace('ws', 'http');
+        const response = await fetch(`${url}/moltbook/feed`);
+        const data = await response.json();
+        setMoltbookPosts(data);
+      } catch (e) {
+        console.error("Moltbook poll error", e);
+      }
+    };
+
+    pollMoltbook();
+    const moltbookInterval = setInterval(pollMoltbook, 5000);
+
     return () => {
       mapWs.close();
       peopleWs.close();
       txWs.close();
       planetWs.close();
+      clearInterval(moltbookInterval);
     };
   }, []);
 
@@ -258,6 +276,8 @@ const App: React.FC = () => {
                 </div>
               </div>
 
+              <Moltbook posts={[...moltbookPosts].reverse().slice(0, 10)} />
+
               <div>
                 <h2 className="text-[8px] font-bold text-white/20 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
                   <Zap size={10} /> DATA_FEED
@@ -271,8 +291,6 @@ const App: React.FC = () => {
                   ))}
                 </div>
               </div>
-
-
             </div>
 
             <div className="mt-auto pt-8 flex items-center justify-between text-[7px] text-white/10 tracking-widest">
