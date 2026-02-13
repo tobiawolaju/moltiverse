@@ -1,0 +1,1 @@
+# ← NPM-style SDK for agent
