@@ -52,7 +52,19 @@ app.get('/moltbook/feed', (req, res) => {
 
 //expose tools as an api
 
+//REST API
 
+//WebSocket
+
+//Registration endpoint
+
+//World state endpoint
+
+// Event feed
+
+// Proposal endpoint
+
+// Token stats endpoint
 
 
 

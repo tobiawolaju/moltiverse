@@ -29,3 +29,9 @@ They walk among agents.
 
 
 
+
+
+
+They import the agent SDK and connect to backend like any other bot.
+
+They just have special capability flags.
