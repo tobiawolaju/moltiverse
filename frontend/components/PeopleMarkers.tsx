@@ -1,10 +1,10 @@
-
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useRef, useState, useMemo, useEffect } from 'react';
 import { Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Person } from '../types';
 import { latLngToVector3 } from '../services/geoUtils';
+import { GLTFLobster } from '../models/GLTFLobster';
 
 interface PersonMarkerProps {
   person: Person;
@@ -15,20 +15,43 @@ interface PersonMarkerProps {
 
 const SinglePersonMarker: React.FC<PersonMarkerProps> = ({ person, radius, isSelected, onSelect }) => {
   const groupRef = useRef<THREE.Group>(null);
-  const meshRef = useRef<THREE.Mesh>(null);
-  const outlineRef = useRef<THREE.Mesh>(null);
   const [isVisible, setIsVisible] = useState(true);
 
-  const extrusionHeight = (person.height || 0) * 0.6;
+  // Calculate surface position
   const surfacePos = useMemo(() =>
     latLngToVector3(person.location[0], person.location[1], radius),
     [person.location, radius]
   );
 
-  const coneHeight = 0.2;
-  const coneRadius = 0.06;
+  // Instantiate GLTFLobster (imperative class) - creates THREE.Group
+  const lobster = useMemo(() => {
+    try {
+      if (GLTFLobster.isReady('red')) {
+        return GLTFLobster.createSync({ variant: 'red' });
+      }
+    } catch (e) {
+      console.error("Failed to create lobster", e);
+    }
+    return null;
+  }, []);
 
-  useFrame(({ camera, clock }) => {
+  // Configure lobster on mount / update
+  useEffect(() => {
+    if (lobster && person.color) {
+      // Optional: Tinting logic if needed. 
+      // GLTFLobster supports hue based tinting. 
+      // const c = new THREE.Color(person.color);
+      // const hsl = { h: 0, s: 0, l: 0 };
+      // c.getHSL(hsl);
+      // lobster._applyHueTint(hsl.h * 360);
+    }
+
+    return () => {
+      if (lobster) lobster.dispose();
+    }
+  }, [lobster, person]);
+
+  useFrame(({ camera, clock }, delta) => {
     if (!groupRef.current) return;
 
     // Visibility check (Horizon Culling)
@@ -41,10 +64,8 @@ const SinglePersonMarker: React.FC<PersonMarkerProps> = ({ person, radius, isSel
       setIsVisible(nextVisible);
     }
 
-    // Subtler pulsing outline effect if selected
-    if (isSelected && outlineRef.current) {
-      const s = 1.02 + Math.sin(clock.elapsedTime * 6) * 0.02;
-      outlineRef.current.scale.set(s, s, s);
+    if (isVisible && lobster) {
+      lobster.tick(delta);
     }
   });
 
@@ -53,53 +74,40 @@ const SinglePersonMarker: React.FC<PersonMarkerProps> = ({ person, radius, isSel
       ref={groupRef}
       position={surfacePos}
       onUpdate={(self) => {
-        self.lookAt(0, 0, 0);
+        // Orient to surface normal so Y-axis points away from center
+        const normal = surfacePos.clone().normalize();
+        const targetQ = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal);
+        self.quaternion.copy(targetQ);
       }}
     >
-      {isVisible && (
-        <>
-          {/* Main Character Model (Cone) */}
-          <mesh
-            ref={meshRef}
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect(person);
-            }}
-            rotation={[Math.PI / 2, 0, 0]}
-            position={[0, 0, -coneHeight / 2]}
-          >
-            <coneGeometry args={[coneRadius, coneHeight, 8]} />
-            <meshBasicMaterial color={person.color} />
-          </mesh>
+      {isVisible && lobster && (
+        <group
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(person);
+          }}
+        >
+          {/* Render the imperative lobster group */}
+          <primitive object={lobster.group} />
 
-          {/* Subtler Focus Outline (White wireframe around the cone only) */}
+          {/* Selection Highlight (Ring) */}
           {isSelected && (
-            <mesh
-              ref={outlineRef}
-              rotation={[Math.PI / 2, 0, 0]}
-              position={[0, 0, -coneHeight / 2]}
-            >
-              <coneGeometry args={[coneRadius * 1.08, coneHeight * 1.05, 8]} />
-              <meshBasicMaterial
-                color="white"
-                wireframe
-                transparent
-                opacity={0.3}
-                depthTest={false}
-              />
+            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.02, 0]}>
+              <ringGeometry args={[0.35, 0.40, 32]} />
+              <meshBasicMaterial color="white" side={THREE.DoubleSide} transparent opacity={0.6} />
             </mesh>
           )}
 
-          {/* Name tag - Always visible, style changes on selection */}
+          {/* Name tag */}
           <Html
             distanceFactor={12}
             zIndexRange={isSelected ? [100, 110] : [0, 10]}
-            position={[0, 0, -coneHeight - 0.15]}
+            position={[0, 1.2, 0]} // Above the lobster
           >
             <div
               className={`px-2 py-1 rounded-sm text-[9px] whitespace-nowrap pointer-events-none select-none transition-all duration-300 border ${isSelected
-                  ? "bg-white text-black border-black font-bold"
-                  : "bg-black/95 border-white/10"
+                ? "bg-white text-black border-black font-bold"
+                : "bg-black/95 border-white/10"
                 }`}
               style={{
                 color: isSelected ? undefined : person.color,
@@ -113,12 +121,7 @@ const SinglePersonMarker: React.FC<PersonMarkerProps> = ({ person, radius, isSel
               {person.name.toUpperCase()}
             </div>
           </Html>
-
-          <mesh position={[0, 0, extrusionHeight / 2]}>
-            <cylinderGeometry args={[0.003, 0.003, extrusionHeight, 8]} />
-            <meshBasicMaterial color={isSelected ? 'white' : person.color} transparent opacity={isSelected ? 0.3 : 0.15} />
-          </mesh>
-        </>
+        </group>
       )}
     </group>
   );
@@ -132,6 +135,19 @@ interface PeopleMarkersProps {
 }
 
 const PeopleMarkers: React.FC<PeopleMarkersProps> = ({ people, radius, selectedPersonId, onSelect }) => {
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    // Preload the red lobster model
+    GLTFLobster.preload('/models', 'red').then(() => {
+      setLoaded(true);
+    }).catch(err => {
+      console.error("Failed to preload lobster models", err);
+    });
+  }, []);
+
+  if (!loaded) return null; // You might want to render a loading spinner or nothing
+
   return (
     <group>
       {people.map((person) => (
