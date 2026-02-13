@@ -37,6 +37,10 @@ const SinglePersonMarker: React.FC<PersonMarkerProps> = ({ person, radius, isSel
 
   // Configure lobster on mount / update
   useEffect(() => {
+    if (lobster) {
+      lobster.stopWalk(); // Default to idle animation
+    }
+
     if (lobster && person.color) {
       // Optional: Tinting logic if needed. 
       // GLTFLobster supports hue based tinting. 
