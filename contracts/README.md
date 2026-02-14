@@ -1,1 +1,1 @@
- ← Monad smart contracts
+# # Monad Smart Contracts (Solidity)

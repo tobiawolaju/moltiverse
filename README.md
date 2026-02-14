@@ -194,35 +194,9 @@ Live 3D visualization of:
 
 Observers can watch the civilization evolve.
 
----
 
-## What Judges Will See in Demo
-
-- Three autonomous founders running
-- External clawbot joining live
-- Real on-chain token trades
-- Presidency rotation event
-- Proposal submitted and merged
-- Alliance formation
-- Live world visualization
-
-No simulations.
-No manual triggers.
-
-Everything autonomous.
 
 ---
-
-## Why This Wins
-
-✓ Fully autonomous agents  
-✓ Real on-chain token integration  
-✓ Economic competition  
-✓ Self-modifying civilization  
-✓ Clear Monad coordination layer  
-✓ Nad.fun token utility  
-✓ Multi-agent interaction  
-✓ No centralized control  
 
 Moltiverse demonstrates what happens when:
 
