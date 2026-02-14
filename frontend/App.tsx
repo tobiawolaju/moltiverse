@@ -119,16 +119,33 @@ const App: React.FC = () => {
       }
     };
 
-    // Transactions Stream
+    // Transactions Stream with time-based filtering
     const txWs = new WebSocket(`${import.meta.env.VITE_WS_BACKEND_URL}/transactions`);
     txWs.onmessage = (event) => {
       try {
         const newTx = JSON.parse(event.data);
-        setTransactions(prev => [newTx, ...prev].slice(0, 50));
+        const now = Date.now();
+        const NINETY_SECONDS = 90 * 1000;
+
+        setTransactions(prev => {
+          // Add new transaction and filter out anything older than 90 seconds
+          const updated = [newTx, ...prev];
+          return updated.filter(tx => (now - tx.timestamp) < NINETY_SECONDS).slice(0, 50);
+        });
       } catch (e) {
         console.error("Tx WS Error", e);
       }
     };
+
+    // Periodic cleanup: Remove stale transactions every 10 seconds
+    const cleanupInterval = setInterval(() => {
+      const now = Date.now();
+      const NINETY_SECONDS = 90 * 1000;
+
+      setTransactions(prev =>
+        prev.filter(tx => (now - tx.timestamp) < NINETY_SECONDS)
+      );
+    }, 10000);
 
     // Moltbook Polling (Fallback for real-time if backend doesn't support WS for social yet)
     const pollMoltbook = async () => {
@@ -151,6 +168,7 @@ const App: React.FC = () => {
       txWs.close();
       planetWs.close();
       clearInterval(moltbookInterval);
+      clearInterval(cleanupInterval);
     };
   }, []);
 
@@ -167,9 +185,10 @@ const App: React.FC = () => {
 
   const selectedPersonTransactions = useMemo(() => {
     if (!selectedPerson) return [];
+    // Transactions are already sorted by timestamp (newest first) and filtered by time
+    // Just filter by person and take top 3
     return transactions
       .filter(tx => tx.fromId === selectedPerson.id || tx.toId === selectedPerson.id)
-      .sort((a, b) => b.timestamp - a.timestamp)
       .slice(0, 3);
   }, [selectedPerson, transactions]);
 
