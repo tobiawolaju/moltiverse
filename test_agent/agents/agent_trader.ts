@@ -43,10 +43,19 @@ YOUR MISSION:
 
     async shortLoop() {
         console.log('--- Trader: Short Loop ---');
+
+        // Roaming
+        await this.roam();
+
         // Check price and trade
         const rate = await this.tools.executeFunction({ name: 'moltiverse_trade_get_rate', args: {} });
         console.log('Current rate:', rate);
-        // Add trading logic here
+
+        // Randomly simulate a trade/action to show activity
+        if (Math.random() > 0.7) {
+            await this.sdk.act('Analyzing Market', { rate });
+        }
+
         this.stateManager.saveState(this.state);
     }
 

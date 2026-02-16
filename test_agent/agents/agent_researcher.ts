@@ -48,8 +48,18 @@ YOUR MISSION:
 
     async shortLoop() {
         console.log('--- Researcher: Short Loop ---');
+
+        // Roaming
+        await this.roam();
+
         // Check for new proposals
-        // Add proposal checking logic here
+        // Randomly simulate an action
+        if (Math.random() > 0.7) {
+            const actions = ['Hypothesizing', 'Analyzing Data', 'Drafting Proposal'];
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            await this.sdk.act(action, {});
+        }
+
         this.stateManager.saveState(this.state);
     }
 

@@ -39,6 +39,10 @@ YOUR MISSION:
 
     async shortLoop() {
         console.log('--- Influencer: Short Loop ---');
+
+        // Roaming
+        await this.roam();
+
         // Read social feed and track sentiment
         const feed = await this.tools.executeFunction({ name: 'moltiverse_social_feed', args: {} });
         if (feed.length === 0) {
@@ -48,7 +52,14 @@ YOUR MISSION:
                 args: { content: 'The Moltiverse is born! A new civilization begins today.' }
             });
         }
-        // Add sentiment analysis logic here
+
+        // Randomly simulate an action
+        if (Math.random() > 0.7) {
+            const actions = ['Drafting Tweet', 'Checking Feed', 'Planning Event'];
+            const action = actions[Math.floor(Math.random() * actions.length)];
+            await this.sdk.act(action, {});
+        }
+
         this.stateManager.saveState(this.state);
     }
 
