@@ -120,8 +120,8 @@ const SinglePersonMarker: React.FC<PersonMarkerProps> = ({ person, radius, isSel
                                     <span className="font-bold tracking-tight">{person.name.toUpperCase()}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <div className={`w-1.5 h-1.5 rounded-full ${person.status === 'online' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-white/20'}`} />
-                                    <span className={`uppercase tracking-[0.2em] text-[6px] ${person.status === 'online' ? 'text-green-500' : 'text-white/30'}`}>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${person.status === 'online' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : (isSelected ? 'bg-black/20' : 'bg-white/20')}`} />
+                                    <span className={`uppercase tracking-[0.2em] text-[6px] ${person.status === 'online' ? 'text-green-500' : (isSelected ? 'text-black/30' : 'text-white/30')}`}>
                                         {person.status || 'OFFLINE'}
                                     </span>
                                 </div>
