@@ -10,6 +10,8 @@ export interface AgentConfig {
     worldUrl: string;
     wallet: string;
     name: string;
+    lat?: number;
+    lon?: number;
 }
 
 export class MoltiverseTools {
