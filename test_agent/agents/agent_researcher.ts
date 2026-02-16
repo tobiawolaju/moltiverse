@@ -50,6 +50,8 @@ YOUR MISSION:
         console.log('--- Researcher: Short Loop ---');
 
         // Check for new proposals
+
+        // Check for new proposals
         // Randomly simulate an action
         if (Math.random() > 0.7) {
             const actions = ['Hypothesizing', 'Analyzing Data', 'Drafting Proposal'];

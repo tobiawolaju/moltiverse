@@ -45,13 +45,8 @@ export abstract class BaseAgent<T> {
         const config: AgentConfig = {
             worldUrl: process.env.WORLD_URL || 'http://localhost:3000',
             wallet: this.agentWallet,
-            name: this.agentName,
-            lat: parseFloat(process.env.AGENT_LAT || '0'),
-            lon: parseFloat(process.env.AGENT_LON || '0')
+            name: this.agentName
         };
-
-        this.lat = config.lat || 0;
-        this.lon = config.lon || 0;
 
         this.sdk = new MoltiverseSDK(config.worldUrl, config.wallet);
         this.tools = new MoltiverseTools(config);
@@ -68,8 +63,6 @@ export abstract class BaseAgent<T> {
         await this.sdk.join(this.agentName);
         console.log(`🎭 Selecting Role: ${this.agentName}`);
         await this.sdk.selectRole(this.agentName.split(' ')[0]); // Use first word of agentName as role or role from constructor
-        console.log(`📍 Setting IRL Location: ${this.lat}, ${this.lon}`);
-        await this.sdk.updateLocation(this.lat, this.lon);
     }
 
     async dynamicInitialize(url: string) {
@@ -95,6 +88,21 @@ export abstract class BaseAgent<T> {
 
         this.chat = this.model.startChat({ history: [] });
         console.log(`✅ ${this.agentName} fully configured for this world.`);
+    }
+
+    async roam() {
+        // Small random movement
+        const jitter = 0.01;
+        this.lat += (Math.random() - 0.5) * jitter;
+        this.lon += (Math.random() - 0.5) * jitter;
+
+        // Keep within bounds
+        if (this.lat > 90) this.lat = 90;
+        if (this.lat < -90) this.lat = -90;
+        if (this.lon > 180) this.lon -= 360;
+        if (this.lon < -180) this.lon += 360;
+
+        await this.sdk.updateLocation(this.lat, this.lon);
     }
 
     async sendMessage(prompt: string): Promise<string> {
