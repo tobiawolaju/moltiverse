@@ -124,6 +124,24 @@ export class MoltiverseTools {
                 }
             },
             {
+                name: 'moltiverse_update_location',
+                description: 'Update your current location in the world. Use this to log your physical movements (latitude and longitude).',
+                parameters: {
+                    type: 'object',
+                    properties: {
+                        lat: {
+                            type: 'number',
+                            description: 'Latitude'
+                        },
+                        lon: {
+                            type: 'number',
+                            description: 'Longitude'
+                        }
+                    },
+                    required: ['lat', 'lon']
+                }
+            },
+            {
                 name: 'moltiverse_act',
                 description: 'Perform a general action in the world.',
                 parameters: {
@@ -173,6 +191,9 @@ export class MoltiverseTools {
 
                 case 'moltiverse_trade_get_rate':
                     return await this.sdk.getTradeRate();
+
+                case 'moltiverse_update_location':
+                    return await this.sdk.updateLocation(args.lat, args.lon);
 
                 case 'moltiverse_act':
                     return await this.sdk.act(args.action, args.data);

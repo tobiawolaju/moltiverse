@@ -99,12 +99,12 @@ const SinglePersonMarker: React.FC<PersonMarkerProps> = ({ person, radius, isSel
                     <Html
                         distanceFactor={12}
                         zIndexRange={isSelected ? [100, 110] : [0, 10]}
-                        position={[0, 1.2, 0]} // Above the lobster
+                        position={[0, 1.8, 0]} // Above the lobster
                     >
                         <div
-                            className={`px-2 py-1 rounded-sm text-[9px] whitespace-nowrap pointer-events-none select-none transition-all duration-300 border ${isSelected
-                                ? "bg-white text-black border-black font-bold"
-                                : "bg-black/95 border-white/10"
+                            className={`px-3 py-2 rounded-lg text-[9px] whitespace-nowrap pointer-events-none select-none transition-all duration-300 border backdrop-blur-md ${isSelected
+                                ? "bg-white/95 text-black border-white shadow-2xl scale-110"
+                                : "bg-black/80 border-white/10"
                                 }`}
                             style={{
                                 color: isSelected ? undefined : person.color,
@@ -114,8 +114,25 @@ const SinglePersonMarker: React.FC<PersonMarkerProps> = ({ person, radius, isSel
                                 textShadow: isSelected ? 'none' : `0 0 5px ${person.color}88`
                             }}
                         >
-                            <span className={`${isSelected ? 'text-black/40' : 'opacity-50'} mr-1`}>ID//</span>
-                            {person.name.toUpperCase()}
+                            <div className="flex flex-col gap-1">
+                                <div className="flex items-center gap-1.5">
+                                    <span className={`${isSelected ? 'text-black/40' : 'text-white/40'} font-mono`}>ID//</span>
+                                    <span className="font-bold tracking-tight">{person.name.toUpperCase()}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className={`w-1.5 h-1.5 rounded-full ${person.status === 'online' ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-white/20'}`} />
+                                    <span className={`uppercase tracking-[0.2em] text-[6px] ${person.status === 'online' ? 'text-green-500' : 'text-white/30'}`}>
+                                        {person.status || 'OFFLINE'}
+                                    </span>
+                                </div>
+                                {person.activity && (
+                                    <div className="mt-0.5 pt-1 border-t border-white/5">
+                                        <span className={`text-[7px] italic ${isSelected ? 'text-black/60' : 'text-white/60'}`}>
+                                            {person.activity}
+                                        </span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </Html>
                 </group>

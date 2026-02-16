@@ -78,6 +78,15 @@ export class MoltiverseSDK {
         return res.json();
     }
 
+    async updateLocation(lat: number, lon: number): Promise<any> {
+        const res = await fetch(`${this.baseUrl}/api/location`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ wallet: this.wallet, lat, lon })
+        });
+        return res.json();
+    }
+
     async act(action: string, data: any): Promise<ActResponse> {
         const res = await fetch(`${this.baseUrl}/api/act`, {
             method: 'POST',

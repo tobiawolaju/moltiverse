@@ -1,7 +1,7 @@
 import { WebSocket } from 'ws';
 
 // --- Types (Mirrors frontend types) ---
-interface Person {
+export interface Person {
   id: string;
   name: string;
   location: [number, number];
@@ -17,6 +17,8 @@ interface Person {
     balance: number;
     currency: string;
   };
+  status?: 'online' | 'offline';
+  activity?: string;
 }
 
 interface Transaction {
@@ -52,8 +54,6 @@ interface MapData {
 }
 
 // --- Constants ---
-const NAMES = ["Astra", "Nova", "Cyrus", "Lyra", "Orion", "Vesper", "Luna", "Sol", "Terra", "Mars"];
-const COLORS = ["#FF5733", "#33FF57", "#3357FF", "#F333FF", "#33FFF3", "#FFFF33", "#FF3388"];
 const OPINIONS = [
   "MON to the moon! 🚀",
   "Is the current gas limit sustainable?",
@@ -63,6 +63,7 @@ const OPINIONS = [
   "Still bullish on Monad throughput.",
   "The hash rate in the northern hemisphere is dropping."
 ];
+const COLORS = ["#FF5733", "#33FF57", "#3357FF", "#F333FF", "#33FFF3", "#FFFF33", "#FF3388"];
 
 // --- Map GeoJSON Generator (runs first) ---
 function generateMapData(): MapData {
@@ -106,44 +107,9 @@ function generateMapData(): MapData {
 // Generate map once at startup
 const mapData = generateMapData();
 
-// --- People Generator (uses map sectors) ---
-function generatePeople(): Person[] {
-  const people: Person[] = [];
-
-  // Distribute people across sectors
-  for (let i = 0; i < NAMES.length; i++) {
-    const sectorIndex = i % mapData.features.length;
-    const sector = mapData.features[sectorIndex];
-
-    // Position within sector with small jitter
-    const jitter = 5;
-    const lat = sector.center[0] + (Math.random() * jitter * 2 - jitter);
-    const lng = sector.center[1] + (Math.random() * jitter * 2 - jitter);
-
-    people.push({
-      id: `p${i + 1}`,
-      name: `${NAMES[i]} ${i + 1}`,
-      location: [lat, lng],
-      color: COLORS[i % COLORS.length],
-      description: `Citizen of ${sector.properties.name}`,
-      height: sector.properties.height,
-      opinion: {
-        text: OPINIONS[Math.floor(Math.random() * OPINIONS.length)],
-        upvotes: Math.floor(Math.random() * 100),
-        downvotes: Math.floor(Math.random() * 10),
-      },
-      wallet: {
-        balance: Math.random() * 1000,
-        currency: "MON",
-      },
-    });
-  }
-
-  return people;
-}
-
 // Generate people after map
-export const people = generatePeople();
+export const people: Person[] = [];
+// Removed generatePeople function and dummy NAMES/COLORS constants
 
 // Social Post storage
 export const socialPosts: any[] = [];
@@ -284,5 +250,36 @@ export function registerSocialPost(authorId: string, text: string): any {
   };
   socialPosts.push(post);
   return post;
+}
+
+export function addOrUpdatePerson(personData: Partial<Person> & { id: string }) {
+  const existingIndex = people.findIndex(p => p.id === personData.id);
+
+  if (existingIndex >= 0) {
+    // Update existing
+    people[existingIndex] = { ...people[existingIndex], ...personData };
+    return people[existingIndex];
+  } else {
+    // Add new (as a full person)
+    const newPerson: Person = {
+      id: personData.id,
+      name: personData.name || "Unknown Agent",
+      location: personData.location || [0, 0],
+      color: personData.color || COLORS[Math.floor(Math.random() * COLORS.length)],
+      description: personData.description || "Synthesized Agent Node",
+      height: personData.height || 0.5,
+      opinion: personData.opinion || {
+        text: "Connected to Moltiverse Matrix.",
+        upvotes: 0,
+        downvotes: 0
+      },
+      wallet: personData.wallet || {
+        balance: 100,
+        currency: "MON"
+      }
+    };
+    people.push(newPerson);
+    return newPerson;
+  }
 }
 

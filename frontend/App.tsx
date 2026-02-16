@@ -289,7 +289,12 @@ const App: React.FC = () => {
                       <span className={`text-[9px] tracking-tighter transition-colors ${selectedPerson?.id === person.id ? 'text-[#836EF9] font-bold' : 'text-white/40 group-hover:text-white'}`}>
                         {person.name.toUpperCase()}
                       </span>
-                      <ChevronRight size={10} className={`text-[#836EF9] transition-all ${selectedPerson?.id === person.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0'}`} />
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[6px] uppercase tracking-widest ${person.status === 'online' ? 'text-green-500' : 'text-white/20'}`}>
+                          {person.status || 'OFFLINE'}
+                        </span>
+                        <ChevronRight size={10} className={`text-[#836EF9] transition-all ${selectedPerson?.id === person.id ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0'}`} />
+                      </div>
                     </button>
                   ))}
                 </div>

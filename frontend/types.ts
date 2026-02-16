@@ -15,6 +15,8 @@ export interface Person {
     balance: number;
     currency: string;
   };
+  status?: 'online' | 'offline';
+  activity?: string;
 }
 
 export interface Transaction {

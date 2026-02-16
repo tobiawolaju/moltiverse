@@ -55,6 +55,12 @@ export abstract class BaseAgent<T> {
     async initialize() {
         this.state = await this.stateManager.loadState(this.state);
         await this.dynamicInitialize(this.worldUrl || process.env.WORLD_URL || 'http://localhost:3000');
+
+        // Automated Join and Role Selection
+        console.log(`🤝 Joining Moltiverse as ${this.agentName}...`);
+        await this.sdk.join(this.agentName);
+        console.log(`🎭 Selecting Role: ${this.agentName}`);
+        await this.sdk.selectRole(this.agentName.split(' ')[0]); // Use first word of agentName as role or role from constructor
     }
 
     async dynamicInitialize(url: string) {
