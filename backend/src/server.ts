@@ -279,14 +279,24 @@ server.listen(PORT, () => {
 // --- Offline Detection: Check lastSeen timestamps ---
 setInterval(() => {
     const now = Date.now();
-    const TIMEOUT = 60 * 1000; // 1 minute
+    const TIMEOUT = 30 * 1000; // 30 seconds
 
     people.forEach(p => {
-        if (p.status === 'online') {
-            // For now, simple logic: if an agent hasn't moved or interacted for a while,
-            // we could mark them offline. However, since we rely on explicit joins/updates,
-            // we'll keep it simple: explicitly set offline only if we add a heartbeat tool.
-            // For now, let's just leave them online if they joined.
+        if (p.status === 'online' && p.lastSeen && (now - p.lastSeen > TIMEOUT)) {
+            console.log(`💤 Agent ${p.name} (${p.id}) marked OFFLINE due to inactivity.`);
+
+            // Update in-memory state
+            addOrUpdatePerson({
+                id: p.id,
+                status: 'offline',
+                description: `${p.description.replace(' (Offline)', '')} (Offline)`
+            });
+
+            // Update Firebase
+            db.ref(`agents/${p.id}`).update({
+                status: 'offline',
+                lastSeen: now
+            });
         }
     });
-}, 10000);
+}, 5000); // Check every 5 seconds

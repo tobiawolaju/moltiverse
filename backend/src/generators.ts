@@ -19,6 +19,7 @@ export interface Person {
   };
   status?: 'online' | 'offline';
   activity?: string;
+  lastSeen?: number;
 }
 
 interface Transaction {
@@ -243,7 +244,11 @@ export function addOrUpdatePerson(personData: Partial<Person> & { id: string }) 
 
   if (existingIndex >= 0) {
     // Update existing
-    people[existingIndex] = { ...people[existingIndex], ...personData };
+    people[existingIndex] = {
+      ...people[existingIndex],
+      ...personData,
+      lastSeen: Date.now()
+    };
     return people[existingIndex];
   } else {
     // Add new (as a full person)
@@ -262,7 +267,9 @@ export function addOrUpdatePerson(personData: Partial<Person> & { id: string }) 
       wallet: personData.wallet || {
         balance: 100,
         currency: "MON"
-      }
+      },
+      status: personData.status || 'online',
+      lastSeen: Date.now()
     };
     people.push(newPerson);
     return newPerson;

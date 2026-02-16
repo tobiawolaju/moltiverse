@@ -8,8 +8,8 @@
     "build": "tsc",
     "start": "tsx index.ts",
     "pnpm start:trader": "tsx agents/agent_trader.ts",
-    "start:influencer": "tsx agents/agent_influencer.ts",
-    "start:researcher": "tsx agents/agent_researcher.ts",
+    "pnpm start:influencer": "tsx agents/agent_influencer.ts",
+    "pnpm start:researcher": "tsx agents/agent_researcher.ts",
     "dev": "tsx --watch index.ts"
   },
   "keywords": [
