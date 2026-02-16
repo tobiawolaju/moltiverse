@@ -116,11 +116,11 @@ export const socialPosts: any[] = [];
 
 // Watcher Events
 const watcherEvents: WatcherEvent[] = [
-  { id: "e1", text: "ANOMALY: Person Astra 1 has achieved 100% wallet saturation in Sector 1.", severity: "high" },
-  { id: "e2", text: "OBSERVATION: Person Nova 2 networth just overtook Person Cyrus 3. The hierarchy shifted.", severity: "critical" },
-  { id: "e3", text: "DATA_FEED: Large transaction detected. Person Lyra 4 is moving assets into the Core.", severity: "medium" },
-  { id: "e4", text: "NARRATIVE: Person Orion 5 is expressing radical opinions about the gas limit.", severity: "low" },
-  { id: "e5", text: "SYSTEM_SCAN: Person Vesper 6 has remained motionless for 4 epochs. Monitoring for pulse.", severity: "medium" }
+  { id: "e1", text: "ANOMALY: High wallet saturation detected in Sector 1.", severity: "high" },
+  { id: "e2", text: "OBSERVATION: Hierarchy shift detected. Wealth concentration is fluctuating.", severity: "critical" },
+  { id: "e3", text: "DATA_FEED: Large transaction detected. Assets moving into the Core.", severity: "medium" },
+  { id: "e4", text: "NARRATIVE: Radical opinions detected regarding the gas limit.", severity: "low" },
+  { id: "e5", text: "SYSTEM_SCAN: Inactivity detected in several nodes. Monitoring for pulse.", severity: "medium" }
 ];
 
 // --- Planet Config ---
@@ -145,23 +145,7 @@ export function startPeopleStream(ws: WebSocket) {
   ws.send(JSON.stringify({ type: 'initial', data: people }));
 
   const interval = setInterval(() => {
-    // Move people slightly within their sector bounds
-    people.forEach((p, i) => {
-      const sectorIndex = i % mapData.features.length;
-      const sector = mapData.features[sectorIndex];
-
-      // Small random movement
-      p.location[0] += (Math.random() - 0.5) * 0.5;
-      p.location[1] += (Math.random() - 0.5) * 0.5;
-
-      // Keep within sector bounds (roughly)
-      const maxDist = 8;
-      const dLat = p.location[0] - sector.center[0];
-      const dLng = p.location[1] - sector.center[1];
-      if (Math.abs(dLat) > maxDist) p.location[0] = sector.center[0] + Math.sign(dLat) * maxDist;
-      if (Math.abs(dLng) > maxDist) p.location[1] = sector.center[1] + Math.sign(dLng) * maxDist;
-    });
-
+    // Note: Automatic jitter movement removed. Agents roam themselves.
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: 'update', data: people }));
     }
@@ -174,6 +158,8 @@ export function startTransactionsStream(ws: WebSocket) {
   console.log('Client connected to /transactions');
 
   const interval = setInterval(() => {
+    if (people.length < 2) return;
+
     const fromIdx = Math.floor(Math.random() * people.length);
     let toIdx = Math.floor(Math.random() * people.length);
     while (toIdx === fromIdx) toIdx = Math.floor(Math.random() * people.length);

@@ -282,16 +282,11 @@ setInterval(() => {
     const TIMEOUT = 60 * 1000; // 1 minute
 
     people.forEach(p => {
-        // We track live updates in the memory object too
-        // For simplicity, here we'll just check if they are currently online
         if (p.status === 'online') {
-            // If they are p1...p15 (simulation bots), we don't mark them offline
-            if (p.id.startsWith('p')) return;
-
-            // For agents, we could check a memory-based lastSeen
-            // But for now, let's just use a simple timeout on their state
-            // If they don't move for 1 minute, they are "offline"
-            // (In a real app, you'd use a real heartbeat)
+            // For now, simple logic: if an agent hasn't moved or interacted for a while,
+            // we could mark them offline. However, since we rely on explicit joins/updates,
+            // we'll keep it simple: explicitly set offline only if we add a heartbeat tool.
+            // For now, let's just leave them online if they joined.
         }
     });
 }, 10000);
