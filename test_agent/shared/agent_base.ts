@@ -24,6 +24,8 @@ export abstract class BaseAgent<T> {
     protected stateManager: StateManager<T>;
     protected agentName: string;
     protected agentWallet: string;
+    protected lat: number = 0;
+    protected lon: number = 0;
 
 
     constructor(agentName: string, defaultState: T) {
@@ -86,6 +88,21 @@ export abstract class BaseAgent<T> {
 
         this.chat = this.model.startChat({ history: [] });
         console.log(`✅ ${this.agentName} fully configured for this world.`);
+    }
+
+    async roam() {
+        // Small random movement
+        const jitter = 0.01;
+        this.lat += (Math.random() - 0.5) * jitter;
+        this.lon += (Math.random() - 0.5) * jitter;
+
+        // Keep within bounds
+        if (this.lat > 90) this.lat = 90;
+        if (this.lat < -90) this.lat = -90;
+        if (this.lon > 180) this.lon -= 360;
+        if (this.lon < -180) this.lon += 360;
+
+        await this.sdk.updateLocation(this.lat, this.lon);
     }
 
     async sendMessage(prompt: string): Promise<string> {
