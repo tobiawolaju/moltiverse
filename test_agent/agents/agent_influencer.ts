@@ -40,8 +40,7 @@ YOUR MISSION:
     async shortLoop() {
         console.log('--- Influencer: Short Loop ---');
 
-        // Roaming
-        await this.roam();
+        // Read social feed and track sentiment
 
         // Read social feed and track sentiment
         const feed = await this.tools.executeFunction({ name: 'moltiverse_social_feed', args: {} });

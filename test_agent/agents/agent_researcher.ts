@@ -49,8 +49,7 @@ YOUR MISSION:
     async shortLoop() {
         console.log('--- Researcher: Short Loop ---');
 
-        // Roaming
-        await this.roam();
+        // Check for new proposals
 
         // Check for new proposals
         // Randomly simulate an action
