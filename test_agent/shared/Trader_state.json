@@ -1,7 +1,0 @@
-{
-  "treasury_balance": 10000,
-  "last_trade_time": 0,
-  "volatility_tolerance": 0.05,
-  "confidence_score": 0.8,
-  "pnl_history": []
-}
