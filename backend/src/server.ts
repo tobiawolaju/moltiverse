@@ -15,24 +15,40 @@ app.use(cors());
 app.use(express.json());
 
 // Initialize Firebase Admin
-const serviceAccountPath = path.resolve(process.cwd(), 'serviceAccount.json');
-if (fs.existsSync(serviceAccountPath)) {
-    const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8'));
-    admin.initializeApp({
-        credential: admin.credential.cert(serviceAccount),
-        databaseURL: process.env.FIREBASE_DATABASE_URL
-    });
-    console.log('🔥 Firebase Admin initialized');
-} else {
-    console.warn('⚠️ serviceAccount.json not found. Database features will be disabled.');
+let firebaseApp: admin.app.App | null = null;
+try {
+    const serviceAccountPath = path.resolve(process.cwd(), 'serviceAccount.json');
+    let credential;
+
+    if (fs.existsSync(serviceAccountPath)) {
+        credential = admin.credential.cert(JSON.parse(fs.readFileSync(serviceAccountPath, 'utf8')));
+    } else if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+        credential = admin.credential.cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT));
+    }
+
+    if (credential) {
+        firebaseApp = admin.initializeApp({
+            credential,
+            databaseURL: process.env.FIREBASE_DATABASE_URL
+        });
+        console.log('🔥 Firebase Admin initialized');
+    } else {
+        console.warn('⚠️ No Firebase credentials found. Database features will be limited.');
+    }
+} catch (error) {
+    console.error('❌ Firebase initialization error:', error);
 }
 
-const db = admin.database();
+const db = firebaseApp ? admin.database() : null;
 
 import { people, registerTrade, registerSocialPost, socialPosts, addOrUpdatePerson } from './generators';
 
 // --- Initialization: Load existing agents from Firebase ---
 async function initializeAgentsFromFirebase() {
+    if (!db) {
+        console.log('⚠️ Skipping Firebase load: Database not initialized.');
+        return;
+    }
     console.log('📦 Loading agents from Firebase...');
     const snapshot = await db.ref('agents').once('value');
     const agents = snapshot.val() || {};
@@ -159,8 +175,10 @@ app.post('/api/social/vote', async (req, res) => {
     }
 
     // Update in Firebase
-    const voteRef = db.ref(`social/posts/${postId}/votes`);
-    await voteRef.transaction((current) => (current || 0) + weight);
+    if (db) {
+        const voteRef = db.ref(`social/posts/${postId}/votes`);
+        await voteRef.transaction((current) => (current || 0) + weight);
+    }
 
     res.json({ status: 'success' });
 });
@@ -175,11 +193,13 @@ app.post('/api/location', (req, res) => {
         status: 'online'
     });
     // Also persist in Firebase
-    db.ref(`agents/${wallet}`).update({
-        location: { lat, lon },
-        lastSeen: Date.now(),
-        status: 'online'
-    });
+    if (db) {
+        db.ref(`agents/${wallet}`).update({
+            location: { lat, lon },
+            lastSeen: Date.now(),
+            status: 'online'
+        });
+    }
     res.json({
         status: 'success',
         location: { lat, lon }
@@ -228,11 +248,13 @@ app.post('/api/location/sync', async (req, res) => {
         });
 
         // Also persist in Firebase
-        await db.ref(`agents/${wallet}`).update({
-            location: { lat, lon },
-            lastSeen: Date.now(),
-            status: 'online'
-        });
+        if (db) {
+            await db.ref(`agents/${wallet}`).update({
+                location: { lat, lon },
+                lastSeen: Date.now(),
+                status: 'online'
+            });
+        }
 
         res.json({
             status: 'success',
@@ -348,10 +370,12 @@ setInterval(() => {
             });
 
             // Update Firebase
-            db.ref(`agents/${p.id}`).update({
-                status: 'offline',
-                lastSeen: now
-            });
+            if (db) {
+                db.ref(`agents/${p.id}`).update({
+                    status: 'offline',
+                    lastSeen: now
+                });
+            }
         }
     });
 }, 5000); // Check every 5 seconds
