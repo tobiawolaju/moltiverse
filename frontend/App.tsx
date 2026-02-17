@@ -57,7 +57,7 @@ const PortraitLock: React.FC<PortraitLockProps> = ({ onBypass }) => {
         </div>
 
         <span className="mt-8 text-[7px] text-white/20 uppercase tracking-[0.4em]">
-          Moltiverse_Core_v1.0.4
+          Citadel_Core_v1.0.4
         </span>
       </div>
 
@@ -201,7 +201,7 @@ const App: React.FC = () => {
     <div className="flex items-center justify-center h-screen bg-black text-white font-mono">
       <div className="flex flex-col items-center gap-4">
         <Activity className="animate-pulse text-[#836EF9]" size={32} />
-        <span className="tracking-[0.8em] text-[10px] uppercase font-bold text-white/40">MOLTIVERSE_BOOT</span>
+        <span className="tracking-[0.8em] text-[10px] uppercase font-bold text-white/40">CITADEL_BOOT</span>
       </div>
     </div>
   );
@@ -253,7 +253,7 @@ const App: React.FC = () => {
           <div className="p-8 h-full flex flex-col">
             <div className="flex items-center justify-between mb-16">
               <div className="flex flex-col">
-                <h1 className="text-xs font-bold tracking-[0.4em] uppercase text-white">MOLTIVERSE</h1>
+                <h1 className="text-xs font-bold tracking-[0.4em] uppercase text-white">CITADEL</h1>
                 <span className="text-[8px] text-[#836EF9] tracking-widest mt-1 uppercase">Node Active</span>
               </div>
               <button onClick={() => setSidebarOpen(false)} className="hover:text-[#836EF9] transition-colors">
