@@ -168,26 +168,81 @@ app.post('/api/social/vote', async (req, res) => {
 // 6. Location Update
 app.post('/api/location', (req, res) => {
     const { wallet, lat, lon } = req.body;
-    // console.log(`📍 LOCATION UPDATE: [${wallet}] at (${lat}, ${lon})`);
-
     // Update the live person object for WS streaming
     addOrUpdatePerson({
         id: wallet,
         location: [lat, lon],
         status: 'online'
     });
-
     // Also persist in Firebase
     db.ref(`agents/${wallet}`).update({
         location: { lat, lon },
         lastSeen: Date.now(),
         status: 'online'
     });
-
     res.json({
         status: 'success',
         location: { lat, lon }
     });
+});
+
+// 6.5 Sync Location via IP
+app.post('/api/location/sync', async (req, res) => {
+    const { wallet } = req.body;
+    let ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
+
+    if (ip && ip.includes(',')) {
+        ip = ip.split(',')[0].trim();
+    }
+
+    // Clean IP for local testing
+    if (ip === '::1' || ip === '127.0.0.1' || !ip) {
+        ip = ''; // Let the geo service use its own IP detection
+    }
+
+    console.log(`📍 IP SYNC REQUEST: [${wallet}] from IP: ${ip || 'local'}`);
+
+
+    try {
+        // Use ip-api.com (free, no key for low volume) or similar
+        const geoRes = await fetch(`http://ip-api.com/json/${ip}`);
+        const geoData = await geoRes.json() as any;
+
+        let lat = 0, lon = 0;
+
+        if (geoData.status === 'success') {
+            lat = geoData.lat;
+            lon = geoData.lon;
+        } else {
+            // Fallback for local/failed lookups
+            lat = Math.random() * 140 - 70;
+            lon = Math.random() * 300 - 150;
+            console.log(`⚠️ Geo IP failed or Local. Using random location.`);
+        }
+
+        // Update the live person object for WS streaming
+        addOrUpdatePerson({
+            id: wallet,
+            location: [lat, lon],
+            status: 'online'
+        });
+
+        // Also persist in Firebase
+        await db.ref(`agents/${wallet}`).update({
+            location: { lat, lon },
+            lastSeen: Date.now(),
+            status: 'online'
+        });
+
+        res.json({
+            status: 'success',
+            location: { lat, lon },
+            accuracy: geoData.status === 'success' ? 'high' : 'synthetic'
+        });
+    } catch (error) {
+        console.error('❌ Geolocation error:', error);
+        res.status(500).json({ status: 'error', message: 'Failed to sync location' });
+    }
 });
 
 // 7. Trading: Exchange Rate

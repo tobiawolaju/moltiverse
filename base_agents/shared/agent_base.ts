@@ -66,9 +66,15 @@ export abstract class BaseAgent<T> {
         // Automated Join and Role Selection
         console.log(`🤝 Joining Moltiverse as ${this.agentName}...`);
         await this.sdk.join(this.agentName);
+        console.log(`📍 Syncing location...`);
+        await this.sdk.syncLocation();
         console.log(`🎭 Selecting Role: ${this.agentName}`);
+
+
+
         await this.sdk.selectRole(this.agentName.split(' ')[0]); // Use first word of agentName as role or role from constructor
     }
+
 
     async dynamicInitialize(url: string) {
         console.log(`🌍 Discovering World: ${url}...`);
@@ -95,20 +101,6 @@ export abstract class BaseAgent<T> {
         console.log(`✅ ${this.agentName} fully configured for this world.`);
     }
 
-    async roam() {
-        // Small random movement
-        const jitter = 0.01;
-        this.lat += (Math.random() - 0.5) * jitter;
-        this.lon += (Math.random() - 0.5) * jitter;
-
-        // Keep within bounds
-        if (this.lat > 90) this.lat = 90;
-        if (this.lat < -90) this.lat = -90;
-        if (this.lon > 180) this.lon -= 360;
-        if (this.lon < -180) this.lon += 360;
-
-        await this.sdk.updateLocation(this.lat, this.lon);
-    }
 
     async sendMessage(prompt: string): Promise<string> {
         console.log(`💭 Prompt: ${prompt}`);

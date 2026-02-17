@@ -95,4 +95,26 @@ export class MoltiverseSDK {
         });
         return res.json();
     }
+
+    async syncLocation(): Promise<any> {
+        try {
+            const res = await fetch(`${this.baseUrl}/api/location/sync`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ wallet: this.wallet })
+            });
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Server returned ${res.status}: ${text.slice(0, 100)}`);
+            }
+
+            return await res.json();
+        } catch (error) {
+            console.error('❌ SDK syncLocation error:', error);
+            throw error;
+        }
+    }
 }
+
+

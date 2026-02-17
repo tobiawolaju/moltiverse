@@ -1,5 +1,6 @@
 import { checkRate } from './tools/trading';
 import { postSocial, getFeed, voteSocial } from './tools/social';
+import { syncLocation } from './tools/location';
 
 const [, , cmd, url, wallet, ...args] = process.argv;
 
@@ -46,6 +47,10 @@ async function run() {
 
       case 'social_vote':
         result = await voteSocial(url, args[0], parseInt(args[1] || '1'));
+        break;
+
+      case 'location_sync':
+        result = await syncLocation(url, wallet);
         break;
 
       default:

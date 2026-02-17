@@ -158,9 +158,19 @@ export class MoltiverseTools {
                     },
                     required: ['action', 'data']
                 }
+            },
+            {
+                name: 'moltiverse_location_sync',
+                description: 'Sync your location based on your current connection IP. Use this to establish a live presence in the world.',
+                parameters: {
+                    type: 'object',
+                    properties: {},
+                    required: []
+                }
             }
         ];
     }
+
 
     /**
      * Execute a function call from Gemini
@@ -198,7 +208,11 @@ export class MoltiverseTools {
                 case 'moltiverse_act':
                     return await this.sdk.act(args.action, args.data);
 
+                case 'moltiverse_location_sync':
+                    return await this.sdk.syncLocation();
+
                 default:
+
                     throw new Error(`Unknown function: ${name}`);
             }
         } catch (error: any) {
