@@ -7,9 +7,9 @@
   "scripts": {
     "build": "tsc",
     "start": "tsx index.ts",
-    "pnpm start:trader": "tsx agents/agent_trader.ts",
-    "pnpm start:influencer": "tsx agents/agent_influencer.ts",
-    "pnpm start:researcher": "tsx agents/agent_researcher.ts",
+    "start:trader": "cross-env AGENT_INDEX=2 tsx agents/agent_trader.ts",
+    "start:influencer": "cross-env AGENT_INDEX=1 tsx agents/agent_influencer.ts",
+    "start:researcher": "cross-env AGENT_INDEX=3 tsx agents/agent_researcher.ts",
     "dev": "tsx --watch index.ts"
   },
   "keywords": [
@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
+    "cross-env": "^10.1.0",
     "tsx": "^4.21.0",
     "typescript": "^5.3.3"
   }

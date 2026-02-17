@@ -11,7 +11,6 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
 export abstract class BaseAgent<T> {
     protected genAI: GoogleGenerativeAI;
@@ -29,13 +28,18 @@ export abstract class BaseAgent<T> {
 
 
     constructor(agentName: string, defaultState: T) {
-        if (!GEMINI_API_KEY) {
-            throw new Error('❌ GEMINI_API_KEY not found in environment variables');
+        const index = process.env.AGENT_INDEX;
+        const apiKey = index ? process.env[`GEMINI_API_KEY_${index}`] : process.env.GEMINI_API_KEY;
+        const wallet = index ? process.env[`AGENT_WALLET_${index}`] : process.env.AGENT_WALLET;
+        const envName = index ? process.env[`AGENT_NAME_${index}`] : null;
+
+        if (!apiKey) {
+            throw new Error(`❌ GEMINI_API_KEY${index ? `_${index}` : ''} not found in environment variables`);
         }
 
-        this.agentName = agentName;
-        this.agentWallet = process.env.AGENT_WALLET || '0x1234567890abcdef1234567890abcdef12345678';
-        this.genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+        this.agentName = envName || agentName;
+        this.agentWallet = wallet || '0x1234567890abcdef1234567890abcdef12345678';
+        this.genAI = new GoogleGenerativeAI(apiKey);
         this.model = this.genAI.getGenerativeModel({
             model: 'gemini-1.5-flash',
             systemInstruction: "You are an OpenClaw Bot. You start as a blank slate. Your first task is to join a world when prompted (e.g., 'join http://...')."
@@ -50,9 +54,10 @@ export abstract class BaseAgent<T> {
 
         this.sdk = new MoltiverseSDK(config.worldUrl, config.wallet);
         this.tools = new MoltiverseTools(config);
-        this.stateManager = new StateManager<T>(agentName);
+        this.stateManager = new StateManager<T>(this.agentName);
         this.state = defaultState;
     }
+
 
     async initialize() {
         this.state = await this.stateManager.loadState(this.state);
