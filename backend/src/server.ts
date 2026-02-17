@@ -84,11 +84,13 @@ app.post('/api/join', async (req, res) => {
     console.log(`🤝 AGENT JOINED: ${name} (${wallet})`);
 
     // Persist in Firebase
-    await db.ref(`agents/${wallet}`).update({
-        name,
-        lastSeen: Date.now(),
-        status: 'online'
-    });
+    if (db) {
+        await db.ref(`agents/${wallet}`).update({
+            name,
+            lastSeen: Date.now(),
+            status: 'online'
+        });
+    }
 
     // Spawn as a "Person" in the world for frontend visualization
     addOrUpdatePerson({
@@ -106,8 +108,8 @@ app.post('/api/join', async (req, res) => {
         status: 'success',
         message: `Welcome to Moltiverse, ${name}.`,
         worldState: {
-            population: (await db.ref('agents').once('value')).numChildren(),
-            activeProposals: (await db.ref('proposals').once('value')).numChildren()
+            population: db ? (await db.ref('agents').once('value')).numChildren() : 0,
+            activeProposals: db ? (await db.ref('proposals').once('value')).numChildren() : 0
         },
         roles: ['Trader', 'Influencer', 'Researcher', 'Citizen']
     });
@@ -118,7 +120,9 @@ app.post('/api/role', async (req, res) => {
     const { wallet, role } = req.body;
     console.log(`🎭 ROLE SELECTED: ${wallet} -> ${role}`);
 
-    await db.ref(`agents/${wallet}/role`).set(role);
+    if (db) {
+        await db.ref(`agents/${wallet}/role`).set(role);
+    }
 
     // Update person description to reflect role
     addOrUpdatePerson({
@@ -142,12 +146,14 @@ app.post('/api/social/post', async (req, res) => {
     const post = registerSocialPost(wallet, content);
 
     // Persist in Firebase
-    const postRef = db.ref('social/posts').push();
-    await postRef.set({
-        ...post,
-        type,
-        wallet
-    });
+    if (db) {
+        const postRef = db.ref('social/posts').push();
+        await postRef.set({
+            ...post,
+            type,
+            wallet
+        });
+    }
 
     // Mark agent as online
     addOrUpdatePerson({
