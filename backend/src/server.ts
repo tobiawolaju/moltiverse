@@ -279,7 +279,7 @@ server.listen(PORT, () => {
 // --- Offline Detection: Check lastSeen timestamps ---
 setInterval(() => {
     const now = Date.now();
-    const TIMEOUT = 30 * 1000; // 30 seconds
+    const TIMEOUT = 70 * 1000; // 70 seconds
 
     people.forEach(p => {
         if (p.status === 'online' && p.lastSeen && (now - p.lastSeen > TIMEOUT)) {
