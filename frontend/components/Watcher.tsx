@@ -135,13 +135,13 @@ const Watcher: React.FC<WatcherProps> = ({ people, onSelectPerson }) => {
           <button
             key={idx}
             onClick={() => foundPerson && onSelectPerson(foundPerson)}
-            className="text-white font-bold hover:underline decoration-[#836EF9] decoration-2 underline-offset-4 transition-all"
+            className="text-[var(--text-primary)] font-bold hover:underline decoration-[var(--accent)] decoration-2 underline-offset-4 transition-all"
           >
             {part}
           </button>
         );
       }
-      return <span key={idx} className="text-white/40">{part}</span>;
+      return <span key={idx} className="text-[var(--text-secondary)]">{part}</span>;
     });
   }, [displayedText, people, onSelectPerson]);
 
@@ -153,7 +153,7 @@ const Watcher: React.FC<WatcherProps> = ({ people, onSelectPerson }) => {
         {/* The AI Header */}
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="absolute inset-0 bg-[#836EF9]/20 rounded-full animate-ping"></div>
+            <div className="absolute inset-0 bg-[var(--accent)]/20 rounded-full animate-ping"></div>
 
             {/* <div className="relative p-2 bg-black border border-white/10 rounded-full">
               <Eye size={12} className="text-[#836EF9]" />
@@ -162,27 +162,27 @@ const Watcher: React.FC<WatcherProps> = ({ people, onSelectPerson }) => {
 
           </div>
           <div className="flex flex-col">
-            <span className="text-[8px] font-bold tracking-[0.4em] uppercase text-white">THE_WATCHER</span>
-            <span className="text-[6px] text-white/20 tracking-widest uppercase flex items-center gap-2">
+            <span className="text-[8px] font-bold tracking-[0.4em] uppercase text-[var(--text-primary)]">THE_WATCHER</span>
+            <span className="text-[6px] text-[var(--text-secondary)] tracking-widest uppercase flex items-center gap-2">
               <Terminal size={8} /> Active Observation State
             </span>
           </div>
         </div>
 
         {/* Narrative Box */}
-        <div className="bg-black/40 backdrop-blur-md border-l border-white/5 p-4 pointer-events-auto">
+        <div className="bg-[var(--bg-primary)]/40 backdrop-blur-md border-l border-[var(--border)] p-4 pointer-events-auto">
           <div className="flex gap-4">
-            <div className="w-[2px] h-full bg-[#836EF9]/20 self-stretch relative">
-              <div className={`absolute top-0 left-0 w-full bg-[#836EF9] transition-all duration-300 ${isTyping ? 'h-full' : 'h-0'}`}></div>
+            <div className="w-[2px] h-full bg-[var(--accent)]/20 self-stretch relative">
+              <div className={`absolute top-0 left-0 w-full bg-[var(--accent)] transition-all duration-300 ${isTyping ? 'h-full' : 'h-0'}`}></div>
             </div>
             <div className="flex flex-col gap-2">
               <div className="text-[10px] leading-relaxed tracking-tight min-h-[40px]">
                 {parsedContent}
-                {isTyping && <span className="inline-block w-1.5 h-3 bg-[#836EF9] ml-1 animate-pulse align-middle"></span>}
+                {isTyping && <span className="inline-block w-1.5 h-3 bg-[var(--accent)] ml-1 animate-pulse align-middle"></span>}
               </div>
               <div className="flex items-center justify-between mt-2">
-                <span className="text-[6px] text-white/10 uppercase tracking-[0.2em]">Hash_ref: {events[currentIndex].id}</span>
-                <span className={`text-[6px] uppercase tracking-widest ${events[currentIndex].severity === 'critical' ? 'text-red-500' : 'text-[#836EF9]/50'}`}>
+                <span className="text-[6px] text-[var(--text-secondary)] uppercase tracking-[0.2em]">Hash_ref: {events[currentIndex].id}</span>
+                <span className={`text-[6px] uppercase tracking-widest ${events[currentIndex].severity === 'critical' ? 'text-red-500' : 'text-[var(--accent)]/50'}`}>
                   Lvl: {events[currentIndex].severity}
                 </span>
               </div>
