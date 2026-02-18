@@ -227,6 +227,7 @@ const Globe: React.FC<GlobeProps> = ({ mapData, people, transactions, planetConf
                 speed={planetConfig.clouds.rotationSpeed}
                 opacity={planetConfig.clouds.opacity}
                 color={planetConfig.clouds.color}
+                theme={theme}
               />
             )}
 

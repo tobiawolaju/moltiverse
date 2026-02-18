@@ -8,11 +8,12 @@ interface CloudsProps {
   speed: number;
   opacity: number;
   color: string;
+  theme: 'dark' | 'light';
 }
 
-const Clouds: React.FC<CloudsProps> = ({ radius, speed, opacity, color }) => {
+const Clouds: React.FC<CloudsProps> = ({ radius, speed, opacity, color, theme }) => {
   const cloudRef = useRef<THREE.Group>(null);
-  const cloudRef2 = useRef<THREE.Mesh>(null);
+  const isLight = theme === 'light';
 
   useFrame((state) => {
     if (cloudRef.current) {
@@ -23,26 +24,26 @@ const Clouds: React.FC<CloudsProps> = ({ radius, speed, opacity, color }) => {
 
   return (
     <group ref={cloudRef}>
-      <mesh ref={cloudRef2} scale={1.05}>
+      <mesh scale={1.05}>
         <sphereGeometry args={[radius, 64, 64]} />
-        <meshStandardMaterial 
-          color={color}
+        <meshBasicMaterial
+          color={isLight ? "#ffffff" : color}
           transparent
-          opacity={opacity}
+          opacity={isLight ? opacity * 0.4 : opacity}
           depthWrite={false}
           side={THREE.DoubleSide}
-          blending={THREE.AdditiveBlending}
+          blending={isLight ? THREE.NormalBlending : THREE.AdditiveBlending}
         />
       </mesh>
       {/* Secondary cloud layer for depth */}
       <mesh scale={1.06} rotation={[Math.PI / 4, 0, 0]}>
         <sphereGeometry args={[radius, 48, 48]} />
-        <meshStandardMaterial 
-          color={color}
+        <meshBasicMaterial
+          color={isLight ? "#ffffff" : color}
           transparent
-          opacity={opacity * 0.5}
+          opacity={isLight ? opacity * 0.2 : opacity * 0.5}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          blending={isLight ? THREE.NormalBlending : THREE.AdditiveBlending}
         />
       </mesh>
     </group>
