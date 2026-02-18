@@ -92,15 +92,15 @@ const PlanetSurface: React.FC<PlanetSurfaceProps> = ({ features, radius }) => {
       const extrusionRadius = radius + (heightFactor * 0.6); // Increased for clear 3D volume
 
       const center = [0, 0];
-      coords.forEach((p: number[]) => { 
-        center[0] += p[0]; 
-        center[1] += p[1]; 
+      coords.forEach((p: number[]) => {
+        center[0] += p[0];
+        center[1] += p[1];
       });
       center[0] /= coords.length;
       center[1] /= coords.length;
 
       const topCenterV = latLngToVector3(center[1], center[0], extrusionRadius);
-      
+
       // Use HSL for consistent reddish-purple variety based on height
       // Hue around 0.85 - 0.95 is reddish purple to magenta
       const baseColor = new THREE.Color().setHSL(0.88 + (heightFactor * 0.1), 0.9, 0.45);
@@ -116,12 +116,12 @@ const PlanetSurface: React.FC<PlanetSurfaceProps> = ({ features, radius }) => {
 
         // Solid Mesh (Top Cap)
         allVertices.push(...topCenterV.toArray(), ...v1Top.toArray(), ...v2Top.toArray());
-        for(let j=0; j<3; j++) allColors.push(baseColor.r, baseColor.g, baseColor.b);
+        for (let j = 0; j < 3; j++) allColors.push(baseColor.r, baseColor.g, baseColor.b);
 
         // Side Walls (Two triangles per segment)
         allVertices.push(...v1Base.toArray(), ...v2Base.toArray(), ...v1Top.toArray());
         allVertices.push(...v2Base.toArray(), ...v2Top.toArray(), ...v1Top.toArray());
-        for(let j=0; j<6; j++) allColors.push(baseColor.r, baseColor.g, baseColor.b);
+        for (let j = 0; j < 6; j++) allColors.push(baseColor.r, baseColor.g, baseColor.b);
 
         // Wireframe lines for technical depth
         wireVertices.push(...v1Top.toArray(), ...v2Top.toArray()); // Top perimeter
@@ -152,10 +152,10 @@ const PlanetSurface: React.FC<PlanetSurfaceProps> = ({ features, radius }) => {
     <group>
       {/* Solid Dithered Extrusions with reddish-purple colors */}
       <mesh geometry={surfaceGeometry} material={shaderMaterial} />
-      
+
       {/* Glowy Technical Wireframe to define the 3D volume */}
       <lineSegments geometry={wireGeometry}>
-        <lineBasicMaterial color="#ff22aa" transparent opacity={0.4} />
+        <lineBasicMaterial color="#9c67ffff" transparent opacity={0.4} />
       </lineSegments>
     </group>
   );
