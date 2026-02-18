@@ -234,6 +234,7 @@ const App: React.FC = () => {
           planetConfig={planetConfig}
           selectedPerson={selectedPerson}
           onSelectPerson={setSelectedPerson}
+          theme={theme}
         />
 
         {/* The Watcher AI Narration Agent - Lower Z-Index than sidebars */}

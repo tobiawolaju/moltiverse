@@ -155,25 +155,31 @@ interface GlobeProps {
   planetConfig: PlanetConfig;
   selectedPerson: Person | null;
   onSelectPerson: (person: Person | null) => void;
+  theme: 'dark' | 'light';
 }
 
-const Globe: React.FC<GlobeProps> = ({ mapData, people, transactions, planetConfig, selectedPerson, onSelectPerson }) => {
+const Globe: React.FC<GlobeProps> = ({ mapData, people, transactions, planetConfig, selectedPerson, onSelectPerson, theme }) => {
   // Use radius from config, default to 5 if not present
   const RADIUS = (planetConfig as any).radius || 5;
 
   const shaderMaterial = useMemo(() => {
+    const isLight = theme === 'light';
+    const baseColor = planetConfig.baseColor || "#1a0033";
+    // Adjust base color for light mode if it's too dark
+    const adjustedBaseColor = isLight ? "#d1d1d6" : baseColor;
+
     return new THREE.ShaderMaterial({
       ...DitherShader,
       uniforms: {
         ...DitherShader.uniforms,
         colorA: { value: new THREE.Color(planetConfig.atmosphereColor || "#836EF9") },
-        colorB: { value: new THREE.Color(planetConfig.baseColor || "#1a0033") },
+        colorB: { value: new THREE.Color(adjustedBaseColor) },
       }
     });
-  }, [planetConfig]);
+  }, [planetConfig, theme]);
 
   return (
-    <div className="w-full h-screen bg-black" onClick={() => onSelectPerson(null)}>
+    <div className={`w-full h-screen transition-colors duration-500 ${theme === 'light' ? 'bg-[#f5f5f7]' : 'bg-black'}`} onClick={() => onSelectPerson(null)}>
       <Canvas dpr={[1, 2]} gl={{ antialias: false }}>
         <PerspectiveCamera makeDefault position={[0, 0, 15]} fov={35} />
         <OrbitControls
@@ -185,7 +191,9 @@ const Globe: React.FC<GlobeProps> = ({ mapData, people, transactions, planetConf
           makeDefault
         />
 
-        <Stars radius={300} depth={60} count={2000} factor={4} saturation={0} fade speed={0.2} />
+        {theme === 'dark' && (
+          <Stars radius={300} depth={60} count={2000} factor={4} saturation={0} fade speed={0.2} />
+        )}
 
         <FocusController selectedPerson={selectedPerson} radius={RADIUS} />
 
@@ -203,7 +211,11 @@ const Globe: React.FC<GlobeProps> = ({ mapData, people, transactions, planetConf
 
             <mesh scale={1.002}>
               <sphereGeometry args={[RADIUS, 64, 64]} />
-              <meshBasicMaterial color={planetConfig.atmosphereColor} transparent opacity={0.03} />
+              <meshBasicMaterial
+                color={planetConfig.atmosphereColor}
+                transparent
+                opacity={theme === 'light' ? 0.08 : 0.03}
+              />
             </mesh>
 
             <Seas seas={planetConfig.seas} radius={RADIUS} />
@@ -229,8 +241,8 @@ const Globe: React.FC<GlobeProps> = ({ mapData, people, transactions, planetConf
           </group>
         </Suspense>
 
-        <ambientLight intensity={0.1} />
-        <pointLight position={[10, 10, 10]} intensity={2.5} />
+        <ambientLight intensity={theme === 'light' ? 0.4 : 0.1} />
+        <pointLight position={[10, 10, 10]} intensity={theme === 'light' ? 3.5 : 2.5} />
       </Canvas>
     </div>
   );
