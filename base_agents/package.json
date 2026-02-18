@@ -1,7 +1,7 @@
 {
-  "name": "moltiverse-test-agent",
+  "name": "citadel-test-agent",
   "version": "1.0.0",
-  "description": "Google ADK-based autonomous agent for testing Moltiverse world",
+  "description": "Google ADK-based autonomous agent for testing Citadel world",
   "main": "dist/index.js",
   "type": "module",
   "scripts": {
@@ -15,7 +15,7 @@
   "keywords": [
     "agent",
     "google-adk",
-    "moltiverse",
+    "citadel",
     "ai"
   ],
   "author": "",

@@ -1,7 +1,7 @@
 {
-    "name": "moltiverse-backend",
+    "name": "citadel-backend",
     "version": "1.0.0",
-    "description": "Backend service for Moltiverse",
+    "description": "Backend service for Citadel",
     "main": "src/server.ts",
     "scripts": {
         "start": "ts-node src/server.ts",

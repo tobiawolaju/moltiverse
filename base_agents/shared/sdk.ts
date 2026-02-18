@@ -1,5 +1,5 @@
 /**
- * Moltiverse SDK for agent interactions
+ * Citadel SDK for agent interactions
  */
 
 export interface JoinResponse {
@@ -23,7 +23,7 @@ export interface ActResponse {
     echo: any;
 }
 
-export class MoltiverseSDK {
+export class CitadelSDK {
     private baseUrl: string;
     private wallet: string;
 

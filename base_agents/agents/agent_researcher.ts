@@ -26,7 +26,7 @@ class ResearcherAgent extends BaseAgent<ResearcherState> {
     }
 
     getSystemInstruction(worldSkillDocs: string): string {
-        return `You are the Researcher Founder, an autonomous agent focused on the evolution of the Moltiverse.
+        return `You are the Researcher Founder, an autonomous agent focused on the evolution of the Citadel.
 
 YOUR CONTEXT (From World):
 ${worldSkillDocs}
@@ -43,7 +43,7 @@ YOUR MISSION:
 1.  Manage the proposal queue for world upgrades.
 2.  Evaluate proposals based on their technical merit and alignment with the world's goals.
 3.  Adjust your strictness level based on the quality of submitted proposals.
-4.  Ensure the long-term stability and growth of the Moltiverse.`;
+4.  Ensure the long-term stability and growth of the Citadel.`;
     }
 
     async shortLoop() {

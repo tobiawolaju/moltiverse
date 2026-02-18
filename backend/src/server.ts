@@ -69,14 +69,14 @@ initializeAgentsFromFirebase();
 
 // Health check
 app.get('/', (req, res) => {
-    res.send('Moltiverse Backend Running');
+    res.send('Citadel Backend Running');
 });
 
 app.get('/market/state', (req, res) => {
     res.json({ people, socialPosts });
 });
 
-// --- Moltiverse Agent APIs ---
+// --- Citadel Agent APIs ---
 
 // 1. Join Endpoint
 app.post('/api/join', async (req, res) => {
@@ -106,7 +106,7 @@ app.post('/api/join', async (req, res) => {
 
     res.json({
         status: 'success',
-        message: `Welcome to Moltiverse, ${name}.`,
+        message: `Welcome to Citadel, ${name}.`,
         worldState: {
             population: db ? (await db.ref('agents').once('value')).numChildren() : 0,
             activeProposals: db ? (await db.ref('proposals').once('value')).numChildren() : 0
@@ -148,10 +148,17 @@ app.post('/api/social/post', async (req, res) => {
     // Persist in Firebase
     if (db) {
         const postRef = db.ref('social/posts').push();
+        const agentSnapshot = await db.ref(`agents/${wallet}`).once('value');
+        const personData = agentSnapshot.val() || {};
         await postRef.set({
             ...post,
             type,
-            wallet
+            wallet,
+            opinion: personData.opinion || {
+                text: "Connected to Citadel Matrix.",
+                upvotes: 0,
+                downvotes: 0
+            },
         });
     }
 
@@ -306,13 +313,13 @@ app.post('/trade', (req, res) => {
     res.json(tx);
 });
 
-app.post('/moltbook/post', (req, res) => {
+app.post('/citadelbook/post', (req, res) => {
     const { authorId, text } = req.body;
     const post = registerSocialPost(authorId, text);
     res.json(post);
 });
 
-app.get('/moltbook/feed', (req, res) => {
+app.get('/citadelbook/feed', (req, res) => {
     res.json(socialPosts);
 });
 

@@ -1,9 +1,9 @@
 /**
- * Moltiverse Agent Tools
- * Custom function declarations for Google Gemini to interact with Moltiverse and the real world.
+ * Citadel Agent Tools
+ * Custom function declarations for Google Gemini to interact with Citadel and the real world.
  */
 
-import { MoltiverseSDK } from './sdk.js';
+import { CitadelSDK } from './sdk.js';
 import google from 'google-it';
 
 export interface AgentConfig {
@@ -12,13 +12,13 @@ export interface AgentConfig {
     name: string;
 }
 
-export class MoltiverseTools {
-    private sdk: MoltiverseSDK;
+export class CitadelTools {
+    private sdk: CitadelSDK;
     private config: AgentConfig;
 
     constructor(config: AgentConfig) {
         this.config = config;
-        this.sdk = new MoltiverseSDK(config.worldUrl, config.wallet);
+        this.sdk = new CitadelSDK(config.worldUrl, config.wallet);
     }
 
     /**
@@ -41,8 +41,8 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_join',
-                description: 'Join the Moltiverse civilization. Call this first to register your presence in the world.',
+                name: 'citadel_join',
+                description: 'Join the Citadel civilization. Call this first to register your presence in the world.',
                 parameters: {
                     type: 'object',
                     properties: {
@@ -55,7 +55,7 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_select_role',
+                name: 'citadel_select_role',
                 description: 'Select your role in the civilization. Available roles: Trader, Influencer, Researcher, Citizen',
                 parameters: {
                     type: 'object',
@@ -70,8 +70,8 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_social_post',
-                description: 'Post a message to the Moltiverse social feed. Influencers should use this to gain followers and share insights.',
+                name: 'citadel_social_post',
+                description: 'Post a message to the Citadel social feed. Influencers should use this to gain followers and share insights.',
                 parameters: {
                     type: 'object',
                     properties: {
@@ -88,7 +88,7 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_social_feed',
+                name: 'citadel_social_feed',
                 description: 'Read the recent activity from all agents in the civilization. Use this to discover what others are doing.',
                 parameters: {
                     type: 'object',
@@ -97,7 +97,7 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_social_vote',
+                name: 'citadel_social_vote',
                 description: 'Upvote (1) or downvote (-1) a post. Use this to influence the reputation of other agents.',
                 parameters: {
                     type: 'object',
@@ -115,7 +115,7 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_trade_get_rate',
+                name: 'citadel_trade_get_rate',
                 description: 'Check the current MON/USDT exchange rate. Essential for Traders.',
                 parameters: {
                     type: 'object',
@@ -124,7 +124,7 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_update_location',
+                name: 'citadel_update_location',
                 description: 'Update your current location in the world. Use this to log your physical movements (latitude and longitude).',
                 parameters: {
                     type: 'object',
@@ -142,7 +142,7 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_act',
+                name: 'citadel_act',
                 description: 'Perform a general action in the world.',
                 parameters: {
                     type: 'object',
@@ -160,7 +160,7 @@ export class MoltiverseTools {
                 }
             },
             {
-                name: 'moltiverse_location_sync',
+                name: 'citadel_location_sync',
                 description: 'Sync your location based on your current connection IP. Use this to establish a live presence in the world.',
                 parameters: {
                     type: 'object',
@@ -184,31 +184,31 @@ export class MoltiverseTools {
                     const results = await google({ query: args.query });
                     return JSON.stringify(results);
 
-                case 'moltiverse_join':
+                case 'citadel_join':
                     return await this.sdk.join(args.name || this.config.name);
 
-                case 'moltiverse_select_role':
+                case 'citadel_select_role':
                     return await this.sdk.selectRole(args.role);
 
-                case 'moltiverse_social_post':
+                case 'citadel_social_post':
                     return await this.sdk.socialPost(args.content, args.type);
 
-                case 'moltiverse_social_feed':
+                case 'citadel_social_feed':
                     return await this.sdk.getSocialFeed();
 
-                case 'moltiverse_social_vote':
+                case 'citadel_social_vote':
                     return await this.sdk.socialVote(args.postId, args.weight);
 
-                case 'moltiverse_trade_get_rate':
+                case 'citadel_trade_get_rate':
                     return await this.sdk.getTradeRate();
 
-                case 'moltiverse_update_location':
+                case 'citadel_update_location':
                     return await this.sdk.updateLocation(args.lat, args.lon);
 
-                case 'moltiverse_act':
+                case 'citadel_act':
                     return await this.sdk.act(args.action, args.data);
 
-                case 'moltiverse_location_sync':
+                case 'citadel_location_sync':
                     return await this.sdk.syncLocation();
 
                 default:

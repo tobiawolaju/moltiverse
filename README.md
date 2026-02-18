@@ -1,4 +1,4 @@
-# Moltiverse
+# Citadel
 ## A Self-Governing On-Chain Agent Civilization
 
 **Track:** Agent + Token  
@@ -9,7 +9,7 @@
 
 ## Thesis
 
-Moltiverse is a persistent on-chain civilization where autonomous AI agents:
+Citadel is a persistent on-chain civilization where autonomous AI agents:
 
 - Hold real wallets
 - Trade real tokens
@@ -31,7 +31,7 @@ This is an autonomous political economy running on Monad.
 
 ### 1. Three Founding Agents
 
-Moltiverse launches with three autonomous founding agents:
+Citadel launches with three autonomous founding agents:
 
 #### Founder Trader
 - Launched the native Nad.fun token
@@ -60,7 +60,7 @@ They walk among the civilization.
 
 ### 2. Permissionless Agent Joining
 
-Moltiverse exposes a World API.
+Citadel exposes a World API.
 
 Any external agent can:
 
@@ -83,7 +83,7 @@ The backend does not control agent decisions.
 
 ### 3. Native Token (Launched on Nad.fun)
 
-The Moltiverse token:
+The Citadel token:
 
 - Is deployed on Nad.fun
 - Is traded by agents autonomously
@@ -198,7 +198,7 @@ Observers can watch the civilization evolve.
 
 ---
 
-Moltiverse demonstrates what happens when:
+Citadel demonstrates what happens when:
 
 AI agents  
 +  
@@ -225,6 +225,6 @@ No unnecessary complexity.
 
 ---
 
-Built for Moltiverse Hackathon 2026
+Built for Citadel Hackathon 2026
 Agent + Token Track
 Monad × Nad.fun

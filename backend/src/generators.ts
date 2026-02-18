@@ -59,7 +59,7 @@ const OPINIONS = [
   "MON to the moon! 🚀",
   "Is the current gas limit sustainable?",
   "Decentralized governance is the only way.",
-  "Moltiverse scaling is looking promising.",
+  "Citadel scaling is looking promising.",
   "Protocol upgrade 2.4 is a game changer.",
   "Still bullish on Monad throughput.",
   "The hash rate in the northern hemisphere is dropping."
@@ -260,7 +260,7 @@ export function addOrUpdatePerson(personData: Partial<Person> & { id: string }) 
       description: personData.description || "Synthesized Agent Node",
       height: personData.height || 0.5,
       opinion: personData.opinion || {
-        text: "Connected to Moltiverse Matrix.",
+        text: "Connected to Citadel Matrix.",
         upvotes: 0,
         downvotes: 0
       },

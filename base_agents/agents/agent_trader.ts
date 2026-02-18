@@ -47,7 +47,7 @@ YOUR MISSION:
         // Check price and trade
 
         // Check price and trade
-        const rate = await this.tools.executeFunction({ name: 'moltiverse_trade_get_rate', args: {} });
+        const rate = await this.tools.executeFunction({ name: 'citadel_trade_get_rate', args: {} });
         console.log('Current rate:', rate);
 
         // Randomly simulate a trade/action to show activity

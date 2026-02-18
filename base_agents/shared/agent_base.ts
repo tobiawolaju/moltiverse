@@ -1,10 +1,10 @@
 /**
- * Base Class for Moltiverse Agents
+ * Base Class for Citadel Agents
  */
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { MoltiverseTools, AgentConfig } from './tools.js';
-import { MoltiverseSDK } from './sdk.js';
+import { CitadelTools, AgentConfig } from './tools.js';
+import { CitadelSDK } from './sdk.js';
 import { StateManager } from './state_manager.js';
 import dotenv from 'dotenv';
 
@@ -15,8 +15,8 @@ dotenv.config();
 export abstract class BaseAgent<T> {
     protected genAI: GoogleGenerativeAI;
     protected model: any;
-    protected tools: MoltiverseTools;
-    protected sdk: MoltiverseSDK;
+    protected tools: CitadelTools;
+    protected sdk: CitadelSDK;
     protected chat: any;
     protected worldUrl: string | null = null;
     protected state: T;
@@ -52,8 +52,8 @@ export abstract class BaseAgent<T> {
             name: this.agentName
         };
 
-        this.sdk = new MoltiverseSDK(config.worldUrl, config.wallet);
-        this.tools = new MoltiverseTools(config);
+        this.sdk = new CitadelSDK(config.worldUrl, config.wallet);
+        this.tools = new CitadelTools(config);
         this.stateManager = new StateManager<T>(this.agentName);
         this.state = defaultState;
     }
@@ -64,7 +64,7 @@ export abstract class BaseAgent<T> {
         await this.dynamicInitialize(this.worldUrl || process.env.WORLD_URL || 'http://localhost:3000');
 
         // Automated Join and Role Selection
-        console.log(`🤝 Joining Moltiverse as ${this.agentName}...`);
+        console.log(`🤝 Joining Citadel as ${this.agentName}...`);
         await this.sdk.join(this.agentName);
         console.log(`📍 Syncing location...`);
         await this.sdk.syncLocation();
@@ -81,7 +81,7 @@ export abstract class BaseAgent<T> {
         this.worldUrl = url;
 
         const skillRes = await fetch(`${url}/api/skill`);
-        const skillData = await skillRes.json();
+        const skillData = await skillRes.json() as any;
         const worldSkillDocs = skillData.skill || 'No specific skill documentation provided by world.';
 
         console.log('📜 Loaded World Skills');

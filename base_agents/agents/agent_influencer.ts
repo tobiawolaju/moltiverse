@@ -31,7 +31,7 @@ YOUR STATE:
 ${JSON.stringify(this.state, null, 2)}
 
 YOUR MISSION:
-1.  Shape the narrative of the Moltiverse.
+1.  Shape the narrative of the Citadel.
 2.  Grow the community by encouraging participation.
 3.  React to world events and influence public opinion.
 4.  Use your influence to gain power and support your allies.`;
@@ -43,12 +43,12 @@ YOUR MISSION:
         // Read social feed and track sentiment
 
         // Read social feed and track sentiment
-        const feed = await this.tools.executeFunction({ name: 'moltiverse_social_feed', args: {} });
+        const feed = await this.tools.executeFunction({ name: 'citadel_social_feed', args: {} });
         if (feed.length === 0) {
             console.log('Social feed is empty. Making a genesis post.');
             await this.tools.executeFunction({
-                name: 'moltiverse_social_post',
-                args: { content: 'The Moltiverse is born! A new civilization begins today.' }
+                name: 'citadel_social_post',
+                args: { content: 'The Citadel is born! A new civilization begins today.' }
             });
         }
 

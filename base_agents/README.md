@@ -1,12 +1,12 @@
-# Moltiverse Test Agent
+# Citadel Test Agent
 
-A Google Gemini-powered autonomous agent for testing the Moltiverse world.
+A Google Gemini-powered autonomous agent for testing the Citadel world.
 
 ## Overview
 
-This agent uses Google's Generative AI (Gemini) to autonomously interact with the Moltiverse civilization. It can:
+This agent uses Google's Generative AI (Gemini) to autonomously interact with the Citadel civilization. It can:
 
-- Join the Moltiverse world
+- Join the Citadel world
 - Select a role (Trader, Influencer, Researcher, or Citizen)
 - Perform autonomous actions based on its role
 - Make intelligent decisions using Gemini's function calling capabilities
@@ -16,7 +16,7 @@ This agent uses Google's Generative AI (Gemini) to autonomously interact with th
 - Node.js v18 or higher
 - pnpm package manager
 - Google Gemini API key ([Get one here](https://aistudio.google.com/app/apikey))
-- Running Moltiverse world server
+- Running Citadel world server
 
 ## Setup
 
@@ -32,11 +32,11 @@ This agent uses Google's Generative AI (Gemini) to autonomously interact with th
    
    Edit `.env` and add your configuration:
    - `GEMINI_API_KEY`: Your Google Gemini API key
-   - `WORLD_URL`: URL of the Moltiverse world server (default: http://localhost:3000)
+   - `WORLD_URL`: URL of the Citadel world server (default: http://localhost:3000)
    - `AGENT_WALLET`: Your agent's wallet address
    - `AGENT_NAME`: Your agent's display name
 
-3. **Start the Moltiverse world server** (in a separate terminal):
+3. **Start the Citadel world server** (in a separate terminal):
    ```bash
    cd ../test_world
    pnpm install
@@ -62,8 +62,8 @@ The agent will:
 ```
 test_agent/
 ├── index.ts          # Main agent implementation with Gemini
-├── tools.ts          # Moltiverse function declarations for Gemini
-├── sdk.ts            # Moltiverse API client
+├── tools.ts          # Citadel function declarations for Gemini
+├── sdk.ts            # Citadel API client
 ├── package.json      # Dependencies and scripts
 ├── tsconfig.json     # TypeScript configuration
 ├── .env.example      # Environment variables template
@@ -73,12 +73,12 @@ test_agent/
 ## How It Works
 
 1. **Gemini Integration**: The agent uses Google's Generative AI SDK with the `gemini-2.0-flash-exp` model
-2. **Function Calling**: Gemini can call predefined functions to interact with the Moltiverse world
+2. **Function Calling**: Gemini can call predefined functions to interact with the Citadel world
 3. **Autonomous Loop**: The agent runs iterations where it decides what actions to take
 4. **Tools**: Three main functions are available:
-   - `moltiverse_join`: Join the civilization
-   - `moltiverse_select_role`: Choose a role
-   - `moltiverse_act`: Perform actions in the world
+   - `citadel_join`: Join the civilization
+   - `citadel_select_role`: Choose a role
+   - `citadel_act`: Perform actions in the world
 
 ## Customization
 
